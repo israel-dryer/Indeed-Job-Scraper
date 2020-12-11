@@ -25,6 +25,16 @@ def get_record(card):
     return job_title, company, location, post_date, extract_date, summary, job_url
 
 
+def get_page_records(cards, job_list, url_set):
+    """Extract all cards from the page"""
+    for card in cards:
+        record = get_record(card)
+        # add if job title exists and not duplicate
+        if record[0] and record[-1] not in url_set:
+            job_list.append(record)
+            url_set.add(record[-1])
+
+
 def save_data_to_file(records):
     """Save data to csv file"""
     with open('results.csv', 'w', newline='', encoding='utf-8') as f:
@@ -35,34 +45,35 @@ def save_data_to_file(records):
 
 def main(position, location):
     """Run the main program routine"""
-    records = []
+    scraped_jobs = []
+    scraped_urls = set()
+    
     url = get_url(position, location)
-
+    
     # setup web driver
     options = EdgeOptions()
     options.use_chromium = True
     driver = Edge(options=options)
     driver.implicitly_wait(5)
-    driver.get(url)
-
+    driver.get(url)        
+    
     # extract the job data
     while True:
         cards = driver.find_elements_by_class_name('jobsearch-SerpJobCard')
-        for card in cards:
-            record = get_record(card)
-            records.append(record)
+        get_page_records(cards, scraped_jobs, scraped_urls)
         try:
             driver.find_element_by_xpath('//a[@aria-label="Next"]').click()
         except NoSuchElementException:
             break
         except ElementNotInteractableException:
             driver.find_element_by_id('popover-x').click()  # to handle job notification popup
+            get_page_records(cards, scraped_jobs, scraped_urls)
             continue
 
     # shutdown driver and save file
     driver.quit()
-    save_data_to_file(records)
+    save_data_to_file(scraped_jobs)
 
 
 if __name__ == '__main__':
-    main('senior accountant', 'charlotte nc')
+    main('python developer', 'charlotte nc')
