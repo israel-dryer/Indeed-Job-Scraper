@@ -153,10 +153,10 @@ if __name__ == '__main__':
     # include email settings if you want to email the file
     # currently setup for GMAIL... see notes above.
     email_settings = EmailCredentials(
-        username='israel.dryer@gmail.com',
-        password='Fdsjkl&7',
-        sender='israel.dryer@gmail.com',
-        recipient='israel.dryer@gmail.com'
+        username='email@gmail.com',
+        password='password',
+        sender='from@gmail.com',
+        recipient='to@gmail.com'
     )
 
     # using email settings
