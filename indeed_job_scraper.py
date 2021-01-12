@@ -143,12 +143,13 @@ def main(job_title, job_location, filepath, email=None):
     if email:
         email_jobs_file(filepath, email)
 
-
+        
 if __name__ == '__main__':
     # job search settings
-    title = 'Data Scientist'
-    loc = 'Charlotte NC'
-    path = 'data_scientist_jobs.csv'
+    title = str(input('Enter the job that you want to search for: '))
+    loc = str(input('Enter the location of where you want to work: '))
+    path = 'data_scientist_jobs.csv'  
+    
 
     # include email settings if you want to email the file
     # currently setup for GMAIL... see notes above.
